@@ -2,7 +2,6 @@
 
 PSQL="psql --username=freecodecamp --dbname=number_guess -t --no-align -c"
 THE_GUESS_NUMBER=$(( ( RANDOM % 1000 )  + 1 ))
-echo "Numarul de ghicit este:$THE_GUESS_NUMBER"
 
 echo Enter your username:
 read USERNAME
@@ -42,8 +41,8 @@ do
 done
 echo "You guessed it in $CONTOR tries. The secret number was $THE_GUESS_NUMBER. Nice job!"
 
-INSERT_INTO_DATABASE=$($PSQL "Insert Into guesser(username,games_played,best_game,number_of_tries) 
-                              Values('$USERNAME',1,$CONTOR,$CONTOR)");
+INSERT_INTO_DATABASE=$($PSQL "Insert Into guesser(username,games_played,best_game) 
+                              Values('$USERNAME',1,$CONTOR)");
 
 
 else
@@ -85,7 +84,7 @@ done
             BEST_GAME=$CONTOR
         fi
 
-  UPDATE_DATABASE=$($PSQL "Update guesser Set games_played=$GAMES_PLAYED,best_game=$BEST_GAME,number_of_tries=$CONTOR 
+  UPDATE_DATABASE=$($PSQL "Update guesser Set games_played=$GAMES_PLAYED,best_game=$BEST_GAME
                               Where username='$USERNAME'");
 fi
 
