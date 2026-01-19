@@ -1,5 +1,8 @@
 #!/bin/bash
 
+PSQL="psql --username=freecodecamp --dbname=number_guess -t --no-align -c"
+THE_GUESS_NUMBER=$(( ( RANDOM % 1000 )  + 1 ))
+
 
 echo Enter your username:
 read USERNAME
