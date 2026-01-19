@@ -45,10 +45,13 @@ echo "You guessed it in $CONTOR tries. The secret number was $THE_GUESS_NUMBER. 
 INSERT_INTO_DATABASE=$($PSQL "Insert Into guesser(username,games_played,best_game,number_of_tries) 
                               Values('$USERNAME',1,$CONTOR,$CONTOR)");
 
+
 else
    GAMES_PLAYED=$($PSQL "Select games_played From guesser Where username='$USERNAME'");
-   echo Welcome back, $USERNAME! You have played $GAMES_PLAYED games, and your best game took <best_game> guesses.
-echo Guess the secret number between 1 and 1000:
+   BEST_GAME=$($PSQL "Select best_game From guesser Where username='$USERNAME'");
+
+echo "Welcome back, $USERNAME! You have played $GAMES_PLAYED games, and your best game took $BEST_GAME guesses."
+echo "Guess the secret number between 1 and 1000:"
 read SECRET_NUMBER
 CONTOR=1;
 
@@ -77,8 +80,13 @@ done
   echo "You guessed it in $CONTOR tries. The secret number was $THE_GUESS_NUMBER. Nice job!"
 
   ((GAMES_PLAYED++))
-  INSERT_INTO_DATABASE=$($PSQL "Insert Into guesser(username,games_played,best_game,number_of_tries) 
-                              Values('$USERNAME',$GAMES_PLAYED,$CONTOR,$CONTOR)");
+  if [[ -z $BEST_GAME || $CONTOR -lt $BEST_GAME ]]
+        then
+            BEST_GAME=$CONTOR
+        fi
+
+  UPDATE_DATABASE=$($PSQL "Update guesser Set games_played=$GAMES_PLAYED,best_game=$BEST_GAME,number_of_tries=$CONTOR 
+                              Where username='$USERNAME'");
 fi
 
 
